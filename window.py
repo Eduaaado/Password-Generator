@@ -67,8 +67,8 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-        self.slLength.valueChanged.connect(lambda: self.lbLength.setText("Password lenght: "+str(self.slLength.value())))
-        self.btnGen.clicked.connect(lambda: self.generate())
+        self.slLength.valueChanged.connect(lambda: self.lbLength.setText("Password lenght: "+str(self.slLength.value()))) # Update the line displaying the length everytime the slider value changes
+        self.btnGen.clicked.connect(lambda: self.generate()) 
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -84,29 +84,31 @@ class Ui_MainWindow(object):
         import string
         import random
         random.seed()
-        #print(random.choice(string.punctuation))
-        #print(random.randrange(0, 9))
-        #print(random.choice(string.ascii_letters))
-        options = []
-        if self.rdUpLowCase.isChecked(): options.append('Aa')
-        if self.rdNumbers.isChecked(): options.append('123')
-        if self.rdSpecialChar.isChecked(): options.append('&')
-        i = 0
-        passwd = ''
-        while i != self.slLength.value():
-            if options:
-                x = random.randint(0, len(options)-1)
-                if options[x] == 'Aa': char = random.choice(string.ascii_letters)
-                elif options[x] == '123': char = str(random.randrange(0, 9))
-                elif options[x] == '&': char = random.choice(string.punctuation)
-                
-            else:
-                char = random.choice(string.ascii_letters)
 
-            passwd = passwd + char
+        options = [] # List to push checked radios
+
+        if self.rdUpLowCase.isChecked(): options.append('Aa') # Check if user wants lower and upper cases
+        if self.rdNumbers.isChecked(): options.append('123') # Check if user wants numbers
+        if self.rdSpecialChar.isChecked(): options.append('&') # Check if user wants special characters
+        # A full password list would be ['Aa', '123', '&']
+        # We will later check for each item to see what the user wants to include
+
+        i = 0
+        passwd = '' # defining password string
+        while i != self.slLength.value(): # Repeat a while loop until the password reaches the length set by the slider 
+            if options: # If there is at least one checked radio
+                x = random.randint(0, len(options)-1)
+                if options[x] == 'Aa': char = random.choice(string.ascii_letters) # Randomily choose a letter from the ascii code
+                elif options[x] == '123': char = str(random.randrange(0, 9)) # Randomly chooses a number from 0 to 9
+                elif options[x] == '&': char = random.choice(string.punctuation) # Randomly choose a special character
+                
+            else: # If there is no checked radio
+                char = random.choice(string.ascii_letters) 
+
+            passwd = passwd + char # Put the latest char to our password
             i += 1
 
-        if 'Aa' not in options: passwd = passwd.lower()
+        if 'Aa' not in options: passwd = passwd.lower() # Lower case everything if user do not check the letters radio
         self.lbPassword.setText(passwd)
 
 
